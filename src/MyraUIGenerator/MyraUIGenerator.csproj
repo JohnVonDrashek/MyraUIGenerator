@@ -37,7 +37,7 @@
   
   <!-- Include analyzer files in package -->
   <ItemGroup>
-    <None Include="$(OutputPath)$(TargetFramework)/$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs/$(AssemblyName).dll" Visible="false" />
+    <None Include="bin/$(Configuration)/$(TargetFramework)/$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs/$(AssemblyName).dll" Visible="false" />
   </ItemGroup>
   
   <!-- Include README in package -->

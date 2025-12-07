@@ -9,7 +9,7 @@
     
     <!-- NuGet Package Metadata -->
     <PackageId>MyraUIGenerator</PackageId>
-    <Version>1.0.1</Version>
+    <Version>1.0.2</Version>
     <Authors>John VonDrashek</Authors>
     <Description>Source generator for Myra UI XML files that creates strongly-typed accessor classes. Automatically generates C# classes from Myra XML UI definitions.</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>

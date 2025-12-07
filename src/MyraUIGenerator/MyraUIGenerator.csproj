@@ -4,7 +4,7 @@
     <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
     <IncludeBuildOutput>false</IncludeBuildOutput>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
     
     <!-- NuGet Package Metadata -->
@@ -36,9 +36,11 @@
   </ItemGroup>
   
   <!-- Include analyzer files in package -->
-  <ItemGroup>
-    <None Include="bin/$(Configuration)/$(TargetFramework)/$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs/$(AssemblyName).dll" Visible="false" />
-  </ItemGroup>
+  <Target Name="IncludeAnalyzers" AfterTargets="Build" BeforeTargets="Pack">
+    <ItemGroup>
+      <None Include="$(OutputPath)$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs/$(AssemblyName).dll" Visible="false" />
+    </ItemGroup>
+  </Target>
   
   <!-- Include README in package -->
   <ItemGroup>

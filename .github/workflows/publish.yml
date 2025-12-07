@@ -1,0 +1,81 @@
+name: Publish to NuGet
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'  # Triggers on version tags like v1.0.0, v1.1.0, etc.
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write  # Needed for GitHub OIDC if you want to use it later
+    
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0  # Need full history for version extraction
+    
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '8.0.x'
+    
+    - name: Extract version from tag
+      id: tag_version
+      run: |
+        VERSION=${GITHUB_REF#refs/tags/v}
+        echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+        echo "Extracted version: $VERSION"
+    
+    - name: Update version in project file
+      run: |
+        cd src/MyraUIGenerator
+        sed -i "s|<Version>.*</Version>|<Version>${{ steps.tag_version.outputs.VERSION }}</Version>|" MyraUIGenerator.csproj
+        echo "Updated version to ${{ steps.tag_version.outputs.VERSION }}"
+    
+    - name: Restore dependencies
+      run: dotnet restore src/MyraUIGenerator/MyraUIGenerator.csproj
+    
+    - name: Build
+      run: dotnet build src/MyraUIGenerator/MyraUIGenerator.csproj --configuration Release --no-restore
+    
+    - name: Pack
+      continue-on-error: true
+      id: pack
+      run: |
+        dotnet pack src/MyraUIGenerator/MyraUIGenerator.csproj --configuration Release --no-build --output ./artifacts
+        echo "pack_exit_code=$?" >> $GITHUB_OUTPUT
+    
+    - name: Verify package was created
+      run: |
+        if ls ./artifacts/*.nupkg 1> /dev/null 2>&1; then
+          echo "✓ Package created successfully"
+          ls -lh ./artifacts/
+        else
+          echo "✗ ERROR: Package file not found"
+          exit 1
+        fi
+    
+    - name: Publish to NuGet
+      env:
+        NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+      run: |
+        if [ -z "$NUGET_API_KEY" ]; then
+          echo "ERROR: NUGET_API_KEY secret is not set. Please add it in repository settings."
+          exit 1
+        fi
+        dotnet nuget push ./artifacts/*.nupkg \
+          --api-key $NUGET_API_KEY \
+          --source https://api.nuget.org/v3/index.json \
+          --skip-duplicate
+        
+        # Also publish symbols if they exist
+        if ls ./artifacts/*.snupkg 1> /dev/null 2>&1; then
+          dotnet nuget push ./artifacts/*.snupkg \
+            --api-key $NUGET_API_KEY \
+            --source https://api.nuget.org/v3/index.json \
+            --skip-duplicate
+        fi
+

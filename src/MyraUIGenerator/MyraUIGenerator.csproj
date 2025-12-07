@@ -14,8 +14,16 @@
     <Description>Source generator for Myra UI XML files that creates strongly-typed accessor classes. Automatically generates C# classes from Myra XML UI definitions.</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <RepositoryUrl>https://github.com/JohnVonDrashek/MyraUIGenerator</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryBranch>main</RepositoryBranch>
+    <PackageProjectUrl>https://github.com/JohnVonDrashek/MyraUIGenerator</PackageProjectUrl>
     <PackageTags>monogame;myra;source-generator;ui;code-generation</PackageTags>
     <PackageReadmeFile>README.md</PackageReadmeFile>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    
+    <!-- Suppress false positive warnings for analyzer packages -->
+    <NoWarn>$(NoWarn);NU5128</NoWarn>
     
     <!-- Analyzer Configuration -->
     <DevelopmentDependency>true</DevelopmentDependency>
@@ -28,7 +36,7 @@
   
   <!-- Include analyzer files in package -->
   <ItemGroup>
-    <None Include="$(OutputPath)$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+    <None Include="$(OutputPath)$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs/$(AssemblyName).dll" Visible="false" />
   </ItemGroup>
   
   <!-- Include README in package -->

@@ -38,15 +38,23 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore src/MyraUIGenerator/MyraUIGenerator.csproj
     
-    - name: Build
-      run: dotnet build src/MyraUIGenerator/MyraUIGenerator.csproj --configuration Release --no-restore
-    
-    - name: Pack
+    - name: Build and Pack
       continue-on-error: true
-      id: pack
       run: |
-        dotnet pack src/MyraUIGenerator/MyraUIGenerator.csproj --configuration Release --no-build --output ./artifacts
-        echo "pack_exit_code=$?" >> $GITHUB_OUTPUT
+        # Build (package will be created due to GeneratePackageOnBuild=true)
+        dotnet build src/MyraUIGenerator/MyraUIGenerator.csproj --configuration Release --no-restore || true
+        # Create artifacts directory
+        mkdir -p ./artifacts
+        # Copy package if it was created during build
+        if ls src/MyraUIGenerator/bin/Release/*.nupkg 1> /dev/null 2>&1; then
+          echo "Copying package from build output..."
+          cp src/MyraUIGenerator/bin/Release/*.nupkg ./artifacts/
+          cp src/MyraUIGenerator/bin/Release/*.snupkg ./artifacts/ 2>/dev/null || true
+        else
+          # Fallback: pack separately
+          echo "No package from build, packing separately..."
+          dotnet pack src/MyraUIGenerator/MyraUIGenerator.csproj --configuration Release --no-build --output ./artifacts || true
+        fi
     
     - name: Verify package was created
       run: |

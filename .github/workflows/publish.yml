@@ -10,12 +10,12 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      id-token: write  # Needed for GitHub OIDC if you want to use it later
+      id-token: write
     
     steps:
     - uses: actions/checkout@v3
       with:
-        fetch-depth: 0  # Need full history for version extraction
+        fetch-depth: 0
     
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
@@ -38,28 +38,33 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore src/MyraUIGenerator/MyraUIGenerator.csproj
     
-    - name: Build and Pack
-      continue-on-error: true
+    - name: Build
+      run: dotnet build src/MyraUIGenerator/MyraUIGenerator.csproj --configuration Release --no-restore
+    
+    - name: Pack
+      id: pack
       run: |
-        # Build (package will be created due to GeneratePackageOnBuild=true)
-        dotnet build src/MyraUIGenerator/MyraUIGenerator.csproj --configuration Release --no-restore || true
-        # Create artifacts directory
         mkdir -p ./artifacts
-        # Copy package if it was created during build
+        # Pack with error suppression for analyzer packages
+        dotnet pack src/MyraUIGenerator/MyraUIGenerator.csproj \
+          --configuration Release \
+          --no-build \
+          --output ./artifacts \
+          -p:NoWarn=NU5017,NU5128 || true
+        
+        # Check if package was created (even if pack showed errors)
         if ls src/MyraUIGenerator/bin/Release/*.nupkg 1> /dev/null 2>&1; then
           echo "Copying package from build output..."
           cp src/MyraUIGenerator/bin/Release/*.nupkg ./artifacts/
           cp src/MyraUIGenerator/bin/Release/*.snupkg ./artifacts/ 2>/dev/null || true
-        else
-          # Fallback: pack separately
-          echo "No package from build, packing separately..."
-          dotnet pack src/MyraUIGenerator/MyraUIGenerator.csproj --configuration Release --no-build --output ./artifacts || true
         fi
     
     - name: Verify package was created
       run: |
         if ls ./artifacts/*.nupkg 1> /dev/null 2>&1; then
           echo "✓ Package created successfully"
+          echo "Package contents:"
+          unzip -l ./artifacts/*.nupkg | head -20
           ls -lh ./artifacts/
         else
           echo "✗ ERROR: Package file not found"
@@ -74,6 +79,8 @@ jobs:
           echo "ERROR: NUGET_API_KEY secret is not set. Please add it in repository settings."
           exit 1
         fi
+        
+        echo "Publishing package to NuGet.org..."
         dotnet nuget push ./artifacts/*.nupkg \
           --api-key $NUGET_API_KEY \
           --source https://api.nuget.org/v3/index.json \
@@ -81,9 +88,11 @@ jobs:
         
         # Also publish symbols if they exist
         if ls ./artifacts/*.snupkg 1> /dev/null 2>&1; then
+          echo "Publishing symbol package..."
           dotnet nuget push ./artifacts/*.snupkg \
             --api-key $NUGET_API_KEY \
             --source https://api.nuget.org/v3/index.json \
             --skip-duplicate
         fi
-
+        
+        echo "✓ Package published successfully!"

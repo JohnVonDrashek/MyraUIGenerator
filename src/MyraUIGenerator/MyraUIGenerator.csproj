@@ -9,7 +9,7 @@
     
     <!-- NuGet Package Metadata -->
     <PackageId>MyraUIGenerator</PackageId>
-    <Version>1.0.0</Version>
+    <Version>1.0.1</Version>
     <Authors>John VonDrashek</Authors>
     <Description>Source generator for Myra UI XML files that creates strongly-typed accessor classes. Automatically generates C# classes from Myra XML UI definitions.</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
@@ -23,10 +23,11 @@
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     
     <!-- Suppress false positive warnings for analyzer packages -->
-    <NoWarn>$(NoWarn);NU5128</NoWarn>
+    <NoWarn>$(NoWarn);NU5128;NU5017</NoWarn>
     
     <!-- Analyzer Configuration -->
     <DevelopmentDependency>true</DevelopmentDependency>
+    
   </PropertyGroup>
   
   <ItemGroup>
@@ -36,7 +37,7 @@
   
   <!-- Include analyzer files in package -->
   <ItemGroup>
-    <None Include="$(OutputPath)$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs/$(AssemblyName).dll" Visible="false" />
+    <None Include="$(OutputPath)$(TargetFramework)/$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs/$(AssemblyName).dll" Visible="false" />
   </ItemGroup>
   
   <!-- Include README in package -->

@@ -51,8 +51,7 @@ jobs:
         dotnet pack src/MyraUIGenerator/MyraUIGenerator.csproj \
           --configuration Release \
           --no-build \
-          --output ./artifacts \
-          -p:NoWarn=NU5017,NU5128 2>&1 || true
+          --output ./artifacts 2>&1 || true
         
         # Verify package was created in artifacts (even if pack showed errors)
         if ! ls ./artifacts/*.nupkg 1> /dev/null 2>&1; then

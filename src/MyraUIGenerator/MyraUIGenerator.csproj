@@ -35,74 +35,15 @@
     <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.4" PrivateAssets="all" />
   </ItemGroup>
   
-  <!-- Include analyzer files in package -->
-  <Target Name="IncludeAnalyzers" BeforeTargets="Pack">
-    <Message Text="[IncludeAnalyzers] Target executing" Importance="high" />
-    <Message Text="[IncludeAnalyzers] MSBuildProjectDirectory: $(MSBuildProjectDirectory)" Importance="high" />
-    <Message Text="[IncludeAnalyzers] OutputPath: $(OutputPath)" Importance="high" />
-    <Message Text="[IncludeAnalyzers] AssemblyName: $(AssemblyName)" Importance="high" />
-    <Message Text="[IncludeAnalyzers] Configuration: $(Configuration)" Importance="high" />
-    <Message Text="[IncludeAnalyzers] TargetFramework: $(TargetFramework)" Importance="high" />
-    <Message Text="[IncludeAnalyzers] TargetPath: $(TargetPath)" Importance="high" />
-    
-    <!-- Determine the actual DLL path -->
-    <!-- When no-build is used, TargetPath might not be set, so we need to construct it -->
+  <!-- Include analyzer DLL in package -->
+  <Target Name="IncludeAnalyzer" BeforeTargets="_GetPackageFiles" >
     <PropertyGroup>
-      <!-- Default Configuration to Release if not set -->
-      <_Config Condition="'$(Configuration)' == ''">Release</_Config>
-      <_Config Condition="'$(Configuration)' != ''">$(Configuration)</_Config>
-      
-      <!-- Default TargetFramework if not set -->
-      <_TF Condition="'$(TargetFramework)' == ''">netstandard2.0</_TF>
-      <_TF Condition="'$(TargetFramework)' != ''">$(TargetFramework)</_TF>
-      
-      <!-- Try TargetPath first (works when build targets run) -->
-      <_AnalyzerDllPath1 Condition="'$(TargetPath)' != ''">$(TargetPath)</_AnalyzerDllPath1>
-      
-      <!-- Fallback: construct path from known values (works with no-build flag) -->
-      <_AnalyzerDllPath2>$([System.IO.Path]::Combine('$(MSBuildProjectDirectory)', 'bin', '$(_Config)', '$(_TF)', '$(AssemblyName).dll'))</_AnalyzerDllPath2>
-      
-      <!-- Also try with OutputPath if it's set -->
-      <_AnalyzerDllPath3 Condition="'$(OutputPath)' != ''">$(MSBuildProjectDirectory)/$(OutputPath)$(AssemblyName).dll</_AnalyzerDllPath3>
-      <_AnalyzerDllPath4 Condition="'$(OutputPath)' != ''">$(OutputPath)$(AssemblyName).dll</_AnalyzerDllPath4>
+      <_AnalyzerDll Condition="'$(TargetPath)' != ''">$(TargetPath)</_AnalyzerDll>
+      <_AnalyzerDll Condition="'$(_AnalyzerDll)' == ''">$(MSBuildProjectDirectory)/bin/$(Configuration)/$(TargetFramework)/$(AssemblyName).dll</_AnalyzerDll>
     </PropertyGroup>
-    
-    <Message Text="[IncludeAnalyzers] _Config: $(_Config)" Importance="high" />
-    <Message Text="[IncludeAnalyzers] _TF: $(_TF)" Importance="high" />
-    <Message Text="[IncludeAnalyzers] Trying path 1 (TargetPath): $(_AnalyzerDllPath1)" Importance="high" Condition="'$(_AnalyzerDllPath1)' != ''" />
-    <Message Text="[IncludeAnalyzers] Path 1 exists: $([System.IO.File]::Exists('$(_AnalyzerDllPath1)'))" Importance="high" Condition="'$(_AnalyzerDllPath1)' != ''" />
-    <Message Text="[IncludeAnalyzers] Trying path 2 (constructed): $(_AnalyzerDllPath2)" Importance="high" />
-    <Message Text="[IncludeAnalyzers] Path 2 exists: $([System.IO.File]::Exists('$(_AnalyzerDllPath2)'))" Importance="high" />
-    <Message Text="[IncludeAnalyzers] Trying path 3: $(_AnalyzerDllPath3)" Importance="high" Condition="'$(_AnalyzerDllPath3)' != ''" />
-    <Message Text="[IncludeAnalyzers] Path 3 exists: $([System.IO.File]::Exists('$(_AnalyzerDllPath3)'))" Importance="high" Condition="'$(_AnalyzerDllPath3)' != ''" />
-    <Message Text="[IncludeAnalyzers] Trying path 4: $(_AnalyzerDllPath4)" Importance="high" Condition="'$(_AnalyzerDllPath4)' != ''" />
-    <Message Text="[IncludeAnalyzers] Path 4 exists: $([System.IO.File]::Exists('$(_AnalyzerDllPath4)'))" Importance="high" Condition="'$(_AnalyzerDllPath4)' != ''" />
-    
-    <!-- Collect all possible paths that exist, prefer TargetPath if available -->
-    <!-- Use separate targets to check each path sequentially -->
     <ItemGroup>
-      <_AnalyzerDllFiles Include="$(_AnalyzerDllPath1)" Condition="'$(_AnalyzerDllPath1)' != '' AND Exists('$(_AnalyzerDllPath1)')" />
+      <None Include="$(_AnalyzerDll)" Pack="true" PackagePath="analyzers/dotnet/cs" Condition="Exists('$(_AnalyzerDll)')" />
     </ItemGroup>
-    <ItemGroup Condition="'@(_AnalyzerDllFiles)' == ''">
-      <_AnalyzerDllFiles Include="$(_AnalyzerDllPath2)" Condition="Exists('$(_AnalyzerDllPath2)')" />
-    </ItemGroup>
-    <ItemGroup Condition="'@(_AnalyzerDllFiles)' == ''">
-      <_AnalyzerDllFiles Include="$(_AnalyzerDllPath3)" Condition="'$(_AnalyzerDllPath3)' != '' AND Exists('$(_AnalyzerDllPath3)')" />
-    </ItemGroup>
-    <ItemGroup Condition="'@(_AnalyzerDllFiles)' == ''">
-      <_AnalyzerDllFiles Include="$(_AnalyzerDllPath4)" Condition="'$(_AnalyzerDllPath4)' != '' AND Exists('$(_AnalyzerDllPath4)')" />
-    </ItemGroup>
-    
-    <Message Text="[IncludeAnalyzers] Found $(@(_AnalyzerDllFiles->Count())) analyzer DLL file(s)" Importance="high" />
-    <Message Text="[IncludeAnalyzers] File: %(_AnalyzerDllFiles.Identity)" Importance="high" Condition="'@(_AnalyzerDllFiles)' != ''" />
-    
-    <Error Text="[IncludeAnalyzers] ERROR: Analyzer DLL not found! Checked paths: TargetPath=$(_AnalyzerDllPath1), Constructed=$(_AnalyzerDllPath2), OutputPath1=$(_AnalyzerDllPath3), OutputPath2=$(_AnalyzerDllPath4)" Condition="'@(_AnalyzerDllFiles)' == ''" />
-    
-    <ItemGroup>
-      <None Include="@(_AnalyzerDllFiles)" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
-    </ItemGroup>
-    
-    <Message Text="[IncludeAnalyzers] Added @(_AnalyzerDllFiles->Count()) file(s) to package at analyzers/dotnet/cs" Importance="high" Condition="'@(_AnalyzerDllFiles)' != ''" />
   </Target>
   
   <!-- Include README in package -->

@@ -211,7 +211,7 @@ public class MyraUIGenerator : ISourceGenerator
                 {
                     Id = id!,
                     Type = MapElementToType(elementName),
-                    PropertyName = SanitizePropertyName(id!)
+                    PropertyName = id!
                 });
             }
         }
@@ -225,7 +225,7 @@ public class MyraUIGenerator : ISourceGenerator
         return elementName switch
         {
             "Label" => "Label",
-            "TextButton" => "Button",
+            "TextButton" => "TextButton",
             "Button" => "Button",
             "CheckBox" => "CheckBox",
             "TextBox" => "TextBox",
@@ -242,18 +242,6 @@ public class MyraUIGenerator : ISourceGenerator
             "TextBlock" => "TextBlock",
             _ => "Widget" // Fallback for unknown types
         };
-    }
-
-    private string SanitizePropertyName(string id)
-    {
-        // The IDs in XML are already in PascalCase (e.g., "CurrentAnimationLabel")
-        // Remove common suffixes to make property names cleaner
-        if (id.EndsWith("Label") && id != "Label")
-            id = id.Substring(0, id.Length - 5);
-        else if (id.EndsWith("Button") && id != "Button")
-            id = id.Substring(0, id.Length - 6);
-        
-        return id; // Already in PascalCase from XML
     }
 
     private string GenerateUIClass(string fileName, List<WidgetInfo> widgets, string namespaceName)

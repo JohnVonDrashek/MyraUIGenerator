@@ -4,6 +4,8 @@
 ![License](https://img.shields.io/github/license/JohnVonDrashek/MyraUIGenerator)
 ![.NET](https://img.shields.io/badge/.NET-Standard%202.0-blue)
 
+![Myra UI Generator icon](icon.png)
+
 A source generator for Myra UI XML files that automatically creates strongly-typed C# accessor classes.
 
 ## Features

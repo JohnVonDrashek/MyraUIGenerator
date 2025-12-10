@@ -17,6 +17,7 @@
     <RepositoryType>git</RepositoryType>
     <RepositoryBranch>main</RepositoryBranch>
     <PackageProjectUrl>https://github.com/JohnVonDrashek/MyraUIGenerator</PackageProjectUrl>
+    <PackageIcon>icon.png</PackageIcon>
     <PackageTags>monogame;myra;source-generator;ui;code-generation</PackageTags>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <IncludeSymbols>true</IncludeSymbols>
@@ -48,6 +49,7 @@
   
   <!-- Include README in package -->
   <ItemGroup>
+    <None Include="../../icon.png" Pack="true" PackagePath="\" />
     <None Include="../../README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 </Project>

@@ -31,38 +31,65 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           # Clone wiki repository using token authentication
-          git clone https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.wiki.git wiki-repo || {
-            echo "Warning: Wiki repository does not exist yet."
-            echo "Please enable wiki in repository settings: Settings → Features → Wikis"
-            exit 0
-          }
+          echo "Attempting to clone wiki repository..."
+          if git clone https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.wiki.git wiki-repo 2>&1; then
+            echo "✓ Wiki repository cloned successfully"
+          else
+            echo "⚠️ Wiki repository does not exist yet or cannot be accessed."
+            echo "Please ensure:"
+            echo "  1. Wiki is enabled in repository settings: Settings → Features → Wikis → Enable"
+            echo "  2. The GITHUB_TOKEN has write permissions"
+            exit 1
+          fi
       
       - name: Sync Wiki Files
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          if [ -d "wiki-repo" ]; then
+          if [ -d "wiki-repo" ] && [ -d "wiki-repo/.git" ]; then
             # Copy all files from wiki/ to wiki-repo/, preserving .git
             echo "Syncing wiki files..."
             rsync -av --delete --exclude='.git' wiki/ wiki-repo/
             
             cd wiki-repo
             
+            # Configure git remote if needed
+            if ! git remote get-url origin >/dev/null 2>&1; then
+              git remote add origin https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.wiki.git
+            fi
+            
+            # Check current branch
+            CURRENT_BRANCH=$(git branch --show-current 2>/dev/null || echo "master")
+            echo "Current branch: $CURRENT_BRANCH"
+            
             # Check if there are any changes
             if [ -n "$(git status --porcelain)" ]; then
+              echo "Changes detected, committing..."
               git add .
-              git commit -m "Update wiki from repository [skip ci]"
+              git commit -m "Update wiki from repository [skip ci]" || echo "Nothing to commit"
               
-              # Try main branch first, then master
-              git push origin HEAD:main 2>/dev/null || git push origin HEAD:master || {
-                echo "Failed to push to wiki repository"
+              # Try to push to current branch, or try main/master
+              echo "Pushing to wiki repository..."
+              if git push https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.wiki.git HEAD:$CURRENT_BRANCH 2>&1; then
+                echo "✓ Wiki updated successfully on branch: $CURRENT_BRANCH"
+              elif git push https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.wiki.git HEAD:main 2>&1; then
+                echo "✓ Wiki updated successfully on branch: main"
+              elif git push https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.wiki.git HEAD:master 2>&1; then
+                echo "✓ Wiki updated successfully on branch: master"
+              else
+                echo "⚠️ Failed to push to wiki repository"
+                echo "This might be because:"
+                echo "  1. Wiki is not enabled in repository settings"
+                echo "  2. GITHUB_TOKEN lacks write permissions"
+                echo "  3. Wiki repository branch structure is different"
                 exit 1
-              }
-              
-              echo "✓ Wiki updated successfully"
+              fi
             else
-              echo "No changes to sync"
+              echo "No changes to sync - wiki is up to date"
             fi
           else
-            echo "Wiki repository not found. Skipping sync."
-            echo "To enable: Go to repository Settings → Features → Wikis → Enable"
+            echo "⚠️ Wiki repository not found or not initialized."
+            echo "Please enable wiki in repository settings: Settings → Features → Wikis → Enable"
+            exit 1
           fi
 

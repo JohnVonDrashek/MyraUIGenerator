@@ -16,12 +16,21 @@ public class MyraUIGenerator : ISourceGenerator
     private const string ConfigKeyNamespace = "myra_ui_generator.namespace";
     private const string ConfigKeyXmlDirectory = "myra_ui_generator.xml_directory";
 
+    /// <summary>
+    /// Initializes the source generator. This method is called once before generation starts.
+    /// </summary>
+    /// <param name="context">The generator initialization context.</param>
     public void Initialize(GeneratorInitializationContext context)
     {
         // Register for syntax receiver if needed, but for this generator we don't need it
         // The generator will process AdditionalFiles in Execute
     }
 
+    /// <summary>
+    /// Executes the source generator, processing XML files and generating C# UI accessor classes.
+    /// Scans AdditionalFiles for Myra XML files and generates strongly-typed wrapper classes.
+    /// </summary>
+    /// <param name="context">The generator execution context containing source files and configuration.</param>
     public void Execute(GeneratorExecutionContext context)
     {
         try
@@ -56,8 +65,8 @@ public class MyraUIGenerator : ISourceGenerator
                 var path = f.Path.Replace('\\', '/'); // Normalize path separators
                 var normalizedDir = xmlDirectory.Replace('\\', '/');
                 
-                // Match if path contains the directory pattern
-                return path.Contains(normalizedDir, StringComparison.OrdinalIgnoreCase);
+                // Match if path contains the directory pattern (case-insensitive)
+                return path.IndexOf(normalizedDir, StringComparison.OrdinalIgnoreCase) >= 0;
             })
             .ToList();
 
@@ -161,6 +170,14 @@ public class MyraUIGenerator : ISourceGenerator
         }
     }
 
+    /// <summary>
+    /// Retrieves a configuration value from analyzer config options, MSBuild properties, or returns the default.
+    /// Checks multiple sources: global analyzer options, MSBuild properties, and per-file options.
+    /// </summary>
+    /// <param name="context">The generator execution context containing configuration options.</param>
+    /// <param name="key">The configuration key to retrieve (e.g., "myra_ui_generator.namespace").</param>
+    /// <param name="defaultValue">The default value to return if the key is not found.</param>
+    /// <returns>The configuration value if found, otherwise the default value.</returns>
     private string GetConfigurationValue(GeneratorExecutionContext context, string key, string defaultValue)
     {
         // Try to get from analyzer config options (from .editorconfig or MSBuild)
@@ -191,6 +208,12 @@ public class MyraUIGenerator : ISourceGenerator
         return defaultValue;
     }
 
+    /// <summary>
+    /// Extracts all widgets with Id attributes from a Myra UI XML document.
+    /// Recursively searches all descendant elements to find any widget that has an Id attribute.
+    /// </summary>
+    /// <param name="xml">The XML document to parse for widgets.</param>
+    /// <returns>A list of widget information containing Id, type, and property name.</returns>
     private List<WidgetInfo> ExtractWidgets(XDocument xml)
     {
         var widgets = new List<WidgetInfo>();
@@ -210,7 +233,7 @@ public class MyraUIGenerator : ISourceGenerator
                 widgets.Add(new WidgetInfo
                 {
                     Id = id!,
-                    Type = MapElementToType(elementName),
+                    Type = elementName,
                     PropertyName = id!
                 });
             }
@@ -219,31 +242,14 @@ public class MyraUIGenerator : ISourceGenerator
         return widgets;
     }
 
-    private string MapElementToType(string elementName)
-    {
-        // Map Myra XML elements to C# types
-        return elementName switch
-        {
-            "Label" => "Label",
-            "TextButton" => "TextButton",
-            "Button" => "Button",
-            "CheckBox" => "CheckBox",
-            "TextBox" => "TextBox",
-            "Panel" => "Panel",
-            "VerticalStackPanel" => "VerticalStackPanel",
-            "HorizontalStackPanel" => "HorizontalStackPanel",
-            "Grid" => "Grid",
-            "ScrollViewer" => "ScrollViewer",
-            "Slider" => "Slider",
-            "ProgressBar" => "ProgressBar",
-            "ListBox" => "ListBox",
-            "ComboBox" => "ComboBox",
-            "Image" => "Image",
-            "TextBlock" => "TextBlock",
-            _ => "Widget" // Fallback for unknown types
-        };
-    }
-
+    /// <summary>
+    /// Generates the C# source code for a UI accessor class.
+    /// Creates a partial class with properties for each widget and an Initialize method to bind them.
+    /// </summary>
+    /// <param name="fileName">The base name of the XML file (without extension), used to create the class name.</param>
+    /// <param name="widgets">The list of widgets to generate properties for.</param>
+    /// <param name="namespaceName">The namespace to place the generated class in.</param>
+    /// <returns>The complete C# source code as a string.</returns>
     private string GenerateUIClass(string fileName, List<WidgetInfo> widgets, string namespaceName)
     {
         var className = $"{fileName}UI";

@@ -19,11 +19,15 @@ jobs:
         dotnet-version: '8.0.x'
     
     - name: Restore dependencies
-      run: dotnet restore
+      run: |
+        dotnet restore src/MyraUIGenerator/MyraUIGenerator.csproj
+        dotnet restore tests/MyraUIGenerator.Tests/MyraUIGenerator.Tests.csproj
     
     - name: Build
-      run: dotnet build --no-restore --configuration Release
+      run: |
+        dotnet build src/MyraUIGenerator/MyraUIGenerator.csproj --no-restore --configuration Release
+        dotnet build tests/MyraUIGenerator.Tests/MyraUIGenerator.Tests.csproj --no-restore --configuration Release
     
     - name: Test
-      run: dotnet test --verbosity normal --collect:"XPlat Code Coverage"
+      run: dotnet test tests/MyraUIGenerator.Tests/MyraUIGenerator.Tests.csproj --no-build --verbosity normal --collect:"XPlat Code Coverage"
 

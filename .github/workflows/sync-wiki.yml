@@ -1,0 +1,68 @@
+name: Sync Wiki
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'wiki/**'
+      - '.github/workflows/sync-wiki.yml'
+  workflow_dispatch:  # Allow manual triggering
+
+jobs:
+  sync-wiki:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      
+      - name: Configure Git
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+      
+      - name: Clone Wiki Repository
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Clone wiki repository using token authentication
+          git clone https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.wiki.git wiki-repo || {
+            echo "Warning: Wiki repository does not exist yet."
+            echo "Please enable wiki in repository settings: Settings → Features → Wikis"
+            exit 0
+          }
+      
+      - name: Sync Wiki Files
+        run: |
+          if [ -d "wiki-repo" ]; then
+            # Copy all files from wiki/ to wiki-repo/, preserving .git
+            echo "Syncing wiki files..."
+            rsync -av --delete --exclude='.git' wiki/ wiki-repo/
+            
+            cd wiki-repo
+            
+            # Check if there are any changes
+            if [ -n "$(git status --porcelain)" ]; then
+              git add .
+              git commit -m "Update wiki from repository [skip ci]"
+              
+              # Try main branch first, then master
+              git push origin HEAD:main 2>/dev/null || git push origin HEAD:master || {
+                echo "Failed to push to wiki repository"
+                exit 1
+              }
+              
+              echo "✓ Wiki updated successfully"
+            else
+              echo "No changes to sync"
+            fi
+          else
+            echo "Wiki repository not found. Skipping sync."
+            echo "To enable: Go to repository Settings → Features → Wikis → Enable"
+          fi
+

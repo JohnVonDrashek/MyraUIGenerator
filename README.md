@@ -142,6 +142,20 @@ Property names in the generated classes match the `Id` attribute values from you
 - Myra UI library
 - MonoGame (or compatible framework)
 
+## Documentation
+
+📚 **Complete documentation is available in the [GitHub Wiki](https://github.com/JohnVonDrashek/MyraUIGenerator/wiki)**
+
+The wiki includes:
+- Getting started guides
+- Configuration options
+- Usage examples and patterns
+- API reference
+- Troubleshooting guide
+- Contributing guidelines
+
+Wiki documentation is automatically synced from the `wiki/` directory in this repository.
+
 ## License
 
 MIT License - see LICENSE file for details.

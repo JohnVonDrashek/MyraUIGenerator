@@ -26,8 +26,8 @@ jobs:
     - name: Build
       run: |
         dotnet build src/MyraUIGenerator/MyraUIGenerator.csproj --no-restore --configuration Release
-        dotnet build tests/MyraUIGenerator.Tests/MyraUIGenerator.Tests.csproj --no-restore --configuration Release
+        dotnet build tests/MyraUIGenerator.Tests/MyraUIGenerator.Tests.csproj --no-restore --configuration Release -f net8.0
     
     - name: Test
-      run: dotnet test tests/MyraUIGenerator.Tests/MyraUIGenerator.Tests.csproj --no-build --verbosity normal --collect:"XPlat Code Coverage"
+      run: dotnet test tests/MyraUIGenerator.Tests/MyraUIGenerator.Tests.csproj --no-build --configuration Release -f net8.0 --verbosity normal --collect:"XPlat Code Coverage"
 

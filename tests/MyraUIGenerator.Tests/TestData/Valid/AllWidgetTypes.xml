@@ -1,0 +1,21 @@
+<Project>
+  <Panel>
+    <Label Id="TestLabel" />
+    <TextButton Id="TestTextButton" />
+    <Button Id="TestButton" />
+    <CheckBox Id="TestCheckBox" />
+    <TextBox Id="TestTextBox" />
+    <Panel Id="TestPanel" />
+    <VerticalStackPanel Id="TestVerticalStackPanel" />
+    <HorizontalStackPanel Id="TestHorizontalStackPanel" />
+    <Grid Id="TestGrid" />
+    <ScrollViewer Id="TestScrollViewer" />
+    <Slider Id="TestSlider" />
+    <ProgressBar Id="TestProgressBar" />
+    <ListBox Id="TestListBox" />
+    <ComboBox Id="TestComboBox" />
+    <Image Id="TestImage" />
+    <TextBlock Id="TestTextBlock" />
+  </Panel>
+</Project>
+

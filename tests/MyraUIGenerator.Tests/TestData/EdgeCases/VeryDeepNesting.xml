@@ -1,0 +1,14 @@
+<Project>
+  <Panel Id="Level1">
+    <Panel Id="Level2">
+      <Panel Id="Level3">
+        <Panel Id="Level4">
+          <Panel Id="Level5">
+            <Label Id="DeepLabel" Text="Very Deep" />
+          </Panel>
+        </Panel>
+      </Panel>
+    </Panel>
+  </Panel>
+</Project>
+

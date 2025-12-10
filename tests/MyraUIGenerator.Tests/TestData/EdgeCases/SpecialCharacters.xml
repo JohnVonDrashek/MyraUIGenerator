@@ -1,0 +1,9 @@
+<Project>
+  <Panel>
+    <Label Id="Widget_1" />
+    <Label Id="Widget_2" />
+    <Label Id="MyWidget123" />
+    <Label Id="WidgetWith_Underscores" />
+  </Panel>
+</Project>
+

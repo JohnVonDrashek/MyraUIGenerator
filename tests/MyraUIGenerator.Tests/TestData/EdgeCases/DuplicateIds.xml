@@ -1,0 +1,7 @@
+<Project>
+  <Panel>
+    <Label Id="Duplicate" Text="First" />
+    <Label Id="Duplicate" Text="Second" />
+  </Panel>
+</Project>
+

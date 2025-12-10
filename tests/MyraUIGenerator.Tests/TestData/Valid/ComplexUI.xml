@@ -1,0 +1,24 @@
+<Project>
+  <Panel Id="MainContainer">
+    <VerticalStackPanel Id="MainLayout">
+      <Label Id="HeaderLabel" Text="Game Menu" />
+      <Panel Id="ContentPanel">
+        <HorizontalStackPanel Id="ButtonContainer">
+          <TextButton Id="NewGameButton" Text="New Game" />
+          <TextButton Id="LoadGameButton" Text="Load Game" />
+          <TextButton Id="SettingsButton" Text="Settings" />
+          <TextButton Id="QuitButton" Text="Quit" />
+        </HorizontalStackPanel>
+        <Grid Id="SettingsGrid">
+          <CheckBox Id="MusicCheckBox" Text="Music" />
+          <CheckBox Id="SoundCheckBox" Text="Sound Effects" />
+          <Slider Id="VolumeSlider" Min="0" Max="100" />
+          <Label Id="VolumeLabel" Text="Volume" />
+        </Grid>
+      </Panel>
+      <TextBox Id="PlayerNameTextBox" Text="Player" />
+      <ProgressBar Id="LoadingProgressBar" />
+    </VerticalStackPanel>
+  </Panel>
+</Project>
+

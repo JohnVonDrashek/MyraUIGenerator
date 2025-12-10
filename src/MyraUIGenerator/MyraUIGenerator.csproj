@@ -29,6 +29,11 @@
     <!-- Analyzer Configuration -->
     <DevelopmentDependency>true</DevelopmentDependency>
     
+    <!-- Assembly name for consistency -->
+    <AssemblyName>MyraUIGenerator</AssemblyName>
+    
+    <!-- Note: InternalsVisibleTo is defined in MyraUIGenerator.cs via assembly attribute -->
+    
   </PropertyGroup>
   
   <ItemGroup>

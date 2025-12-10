@@ -1,0 +1,7 @@
+<Project>
+  <VerticalStackPanel>
+    <Label Id="MessageLabel" Text="Hello" />
+    <TextButton Id="ClickMeButton" Text="Click Me" />
+  </VerticalStackPanel>
+</Project>
+

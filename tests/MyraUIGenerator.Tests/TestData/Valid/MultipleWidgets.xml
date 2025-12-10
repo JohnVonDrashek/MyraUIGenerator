@@ -1,0 +1,10 @@
+<Project>
+  <Panel>
+    <Label Id="TitleLabel" />
+    <TextButton Id="StartButton" />
+    <Button Id="SettingsButton" />
+    <CheckBox Id="FullScreenCheck" />
+    <TextBox Id="PlayerNameInput" />
+  </Panel>
+</Project>
+

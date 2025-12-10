@@ -1,0 +1,5 @@
+<Project>
+  <Panel Id="Test"
+  <!-- Missing closing tag -->
+</Project>
+

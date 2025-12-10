@@ -1,10 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Xml.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
+
+[assembly: InternalsVisibleTo("MyraUIGenerator.Tests")]
 
 namespace MyraUIGenerator;
 
@@ -178,7 +181,7 @@ public class MyraUIGenerator : ISourceGenerator
     /// <param name="key">The configuration key to retrieve (e.g., "myra_ui_generator.namespace").</param>
     /// <param name="defaultValue">The default value to return if the key is not found.</param>
     /// <returns>The configuration value if found, otherwise the default value.</returns>
-    private string GetConfigurationValue(GeneratorExecutionContext context, string key, string defaultValue)
+    internal string GetConfigurationValue(GeneratorExecutionContext context, string key, string defaultValue)
     {
         // Try to get from analyzer config options (from .editorconfig or MSBuild)
         // Check GlobalOptions first
@@ -214,7 +217,7 @@ public class MyraUIGenerator : ISourceGenerator
     /// </summary>
     /// <param name="xml">The XML document to parse for widgets.</param>
     /// <returns>A list of widget information containing Id, type, and property name.</returns>
-    private List<WidgetInfo> ExtractWidgets(XDocument xml)
+    internal List<WidgetInfo> ExtractWidgets(XDocument xml)
     {
         var widgets = new List<WidgetInfo>();
         
@@ -250,7 +253,7 @@ public class MyraUIGenerator : ISourceGenerator
     /// <param name="widgets">The list of widgets to generate properties for.</param>
     /// <param name="namespaceName">The namespace to place the generated class in.</param>
     /// <returns>The complete C# source code as a string.</returns>
-    private string GenerateUIClass(string fileName, List<WidgetInfo> widgets, string namespaceName)
+    internal string GenerateUIClass(string fileName, List<WidgetInfo> widgets, string namespaceName)
     {
         var className = $"{fileName}UI";
         var sb = new StringBuilder();
@@ -292,7 +295,7 @@ public class MyraUIGenerator : ISourceGenerator
         return sb.ToString();
     }
 
-    private class WidgetInfo
+    internal class WidgetInfo
     {
         public string Id { get; set; } = string.Empty;
         public string Type { get; set; } = "Widget";

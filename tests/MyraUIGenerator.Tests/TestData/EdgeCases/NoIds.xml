@@ -1,0 +1,7 @@
+<Project>
+  <Panel>
+    <Label Text="No Id" />
+    <TextButton Text="Also No Id" />
+  </Panel>
+</Project>
+

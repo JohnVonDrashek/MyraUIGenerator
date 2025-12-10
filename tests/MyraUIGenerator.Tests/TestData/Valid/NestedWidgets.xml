@@ -1,0 +1,12 @@
+<Project>
+  <Panel Id="RootPanel">
+    <VerticalStackPanel Id="MainStack">
+      <Label Id="Title" />
+      <HorizontalStackPanel Id="ButtonRow">
+        <TextButton Id="Button1" />
+        <TextButton Id="Button2" />
+      </HorizontalStackPanel>
+    </VerticalStackPanel>
+  </Panel>
+</Project>
+

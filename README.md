@@ -94,15 +94,15 @@ namespace YourNamespace.UI.Generated;
 
 public partial class TitleScreenUI
 {
-    public Button Start { get; private set; }
-    public Label Title { get; private set; }
-    public Button Settings { get; private set; }
+    public TextButton StartButton { get; private set; }
+    public Label TitleLabel { get; private set; }
+    public Button SettingsButton { get; private set; }
     
     public void Initialize(Widget root)
     {
-        Start = root.FindChildById("StartButton") as Button;
-        Title = root.FindChildById("TitleLabel") as Label;
-        Settings = root.FindChildById("SettingsButton") as Button;
+        StartButton = root.FindChildById("StartButton") as TextButton;
+        TitleLabel = root.FindChildById("TitleLabel") as Label;
+        SettingsButton = root.FindChildById("SettingsButton") as Button;
     }
 }
 ```
@@ -112,7 +112,8 @@ public partial class TitleScreenUI
 The generator recognizes these Myra XML elements:
 
 - `Label` → `Label`
-- `TextButton`, `Button` → `Button`
+- `TextButton` → `TextButton`
+- `Button` → `Button`
 - `CheckBox` → `CheckBox`
 - `TextBox` → `TextBox`
 - `Panel` → `Panel`
@@ -128,12 +129,12 @@ The generator recognizes these Myra XML elements:
 - `TextBlock` → `TextBlock`
 - Unknown types → `Widget` (fallback)
 
-## Property Name Sanitization
+## Property Names
 
-The generator automatically cleans up property names:
-- `"StartButton"` → `Start` (removes "Button" suffix)
-- `"TitleLabel"` → `Title` (removes "Label" suffix)
-- `"HealthBar"` → `HealthBar` (kept as-is)
+Property names in the generated classes match the `Id` attribute values from your XML files exactly. For example:
+- Widget with `Id="StartButton"` → Property named `StartButton`
+- Widget with `Id="TitleLabel"` → Property named `TitleLabel`
+- Widget with `Id="HealthBar"` → Property named `HealthBar`
 
 ## Requirements
 
@@ -155,6 +156,6 @@ Contributions welcome! Please open an issue or pull request on GitHub.
 - Initial release
 - Configurable namespace and directory
 - Support for common Myra widget types
-- Automatic property name sanitization
+- Property names match XML `Id` attributes exactly
 
 

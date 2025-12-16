@@ -9,8 +9,7 @@ The generator recognizes the following Myra XML elements and maps them to C# typ
 | XML Element | Generated C# Type | Notes |
 |------------|-------------------|-------|
 | `Label` | `Label` | Standard text label |
-| `TextButton` | `TextButton` | Button with text content |
-| `Button` | `Button` | Generic button widget |
+| `Button` | `Button` | Button widget |
 | `CheckBox` | `CheckBox` | Checkbox control |
 | `TextBox` | `TextBox` | Single-line text input |
 | `Panel` | `Panel` | Container panel |
@@ -74,17 +73,17 @@ namespace YourNamespace.UI.Generated;
 /// </summary>
 public partial class TitleScreenUI
 {
-    public TextButton StartButton { get; private set; }
+    public Button StartButton { get; private set; }
     public Label TitleLabel { get; private set; }
     public Button SettingsButton { get; private set; }
-    
+
     /// <summary>
     /// Initialize widgets from the loaded UI root.
     /// Call this after loading the XML via UiLoader.Load().
     /// </summary>
     public void Initialize(Widget root)
     {
-        StartButton = root.FindChildById("StartButton") as TextButton;
+        StartButton = root.FindChildById("StartButton") as Button;
         TitleLabel = root.FindChildById("TitleLabel") as Label;
         SettingsButton = root.FindChildById("SettingsButton") as Button;
     }
@@ -123,7 +122,7 @@ All generated properties follow this pattern:
 public {WidgetType} {PropertyName} { get; private set; }
 ```
 
-- **WidgetType**: The Myra widget type (e.g., `TextButton`, `Label`)
+- **WidgetType**: The Myra widget type (e.g., `Button`, `Label`)
 - **PropertyName**: Matches the XML `Id` attribute
 - **Access**: Public getter, private setter
 - **Initialization**: Set to `null` until `Initialize()` is called
@@ -165,7 +164,6 @@ All generated types inherit from `Myra.Graphics2D.UI.Widget`:
 ```
 Widget (base)
 ├── Label
-├── TextButton
 ├── Button
 ├── CheckBox
 ├── TextBox
@@ -192,7 +190,7 @@ ui.StartButton.Click += OnClick;
 ui.TitleLabel.Text = "Hello";
 
 // ❌ Compile error - wrong type
-ui.StartButton.Text = "Hello"; // TextButton doesn't have Text property
+ui.StartButton.Text = "Hello"; // Button doesn't have Text property
 
 // ❌ Compile error - property doesn't exist
 ui.NonExistentButton.Click += OnClick;

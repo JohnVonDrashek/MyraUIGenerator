@@ -36,7 +36,7 @@ Common issues and solutions when using Myra UI Generator.
 3. **Add Id Attributes**:
    ```xml
    <!-- Widgets need Id to be generated -->
-   <TextButton Id="MyButton" Text="Click Me" />
+   <Button Id="MyButton" Content="Click Me" />
    ```
 
 4. **Check Build Output**:
@@ -90,16 +90,16 @@ Common issues and solutions when using Myra UI Generator.
 1. **Add Id Attribute**:
    ```xml
    <!-- Correct -->
-   <TextButton Id="StartButton" Text="Start" />
-   
+   <Button Id="StartButton" Content="Start" />
+
    <!-- Missing Id - won't be generated -->
-   <TextButton Text="Start" />
+   <Button Content="Start" />
    ```
 
 2. **Check Property Names**:
    Property names match `Id` exactly (case-sensitive):
    ```xml
-   <TextButton Id="StartButton" />  <!-- Property: StartButton -->
+   <Button Id="StartButton" />  <!-- Property: StartButton -->
    ```
 
 3. **Verify Widget Type**:

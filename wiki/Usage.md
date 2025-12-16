@@ -35,7 +35,7 @@ Every generated class has an `Initialize(Widget root)` method that binds widgets
 ```csharp
 public void Initialize(Widget root)
 {
-    StartButton = root.FindChildById("StartButton") as TextButton;
+    StartButton = root.FindChildById("StartButton") as Button;
     TitleLabel = root.FindChildById("TitleLabel") as Label;
     // ... more widgets
 }
@@ -69,10 +69,10 @@ Create `Content/UI/MainMenu.xml`:
 <Project>
   <VerticalStackPanel>
     <Label Id="TitleLabel" Text="My Awesome Game" />
-    <TextButton Id="NewGameButton" Text="New Game" />
-    <TextButton Id="LoadGameButton" Text="Load Game" />
-    <TextButton Id="SettingsButton" Text="Settings" />
-    <TextButton Id="ExitButton" Text="Exit" />
+    <Button Id="NewGameButton" Content="New Game" />
+    <Button Id="LoadGameButton" Content="Load Game" />
+    <Button Id="SettingsButton" Content="Settings" />
+    <Button Id="ExitButton" Content="Exit" />
   </VerticalStackPanel>
 </Project>
 ```

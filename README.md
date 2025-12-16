@@ -83,7 +83,7 @@ ui.SettingsButton.IsEnabled = true;
 ## Generated Code
 
 For `TitleScreen.xml` with widgets:
-- `Id="StartButton"` (TextButton)
+- `Id="StartButton"` (Button)
 - `Id="TitleLabel"` (Label)
 - `Id="SettingsButton"` (Button)
 
@@ -94,13 +94,13 @@ namespace YourNamespace.UI.Generated;
 
 public partial class TitleScreenUI
 {
-    public TextButton StartButton { get; private set; }
+    public Button StartButton { get; private set; }
     public Label TitleLabel { get; private set; }
     public Button SettingsButton { get; private set; }
-    
+
     public void Initialize(Widget root)
     {
-        StartButton = root.FindChildById("StartButton") as TextButton;
+        StartButton = root.FindChildById("StartButton") as Button;
         TitleLabel = root.FindChildById("TitleLabel") as Label;
         SettingsButton = root.FindChildById("SettingsButton") as Button;
     }
@@ -112,7 +112,6 @@ public partial class TitleScreenUI
 The generator recognizes these Myra XML elements:
 
 - `Label` → `Label`
-- `TextButton` → `TextButton`
 - `Button` → `Button`
 - `CheckBox` → `CheckBox`
 - `TextBox` → `TextBox`

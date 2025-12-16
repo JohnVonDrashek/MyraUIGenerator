@@ -12,7 +12,7 @@ A minimal example with a single button.
 <Project>
   <VerticalStackPanel>
     <Label Id="MessageLabel" Text="Click the button!" />
-    <TextButton Id="ClickMeButton" Text="Click Me" />
+    <Button Id="ClickMeButton" Content="Click Me" />
   </VerticalStackPanel>
 </Project>
 ```
@@ -92,12 +92,12 @@ namespace MyGame.UI.Generated;
 public partial class SimpleButtonUI
 {
     public Label MessageLabel { get; private set; }
-    public TextButton ClickMeButton { get; private set; }
-    
+    public Button ClickMeButton { get; private set; }
+
     public void Initialize(Widget root)
     {
         MessageLabel = root.FindChildById("MessageLabel") as Label;
-        ClickMeButton = root.FindChildById("ClickMeButton") as TextButton;
+        ClickMeButton = root.FindChildById("ClickMeButton") as Button;
     }
 }
 ```
@@ -123,8 +123,8 @@ A more realistic example with multiple widget types and nested layouts.
     
     <!-- Bottom Controls -->
     <HorizontalStackPanel GridRow="2" GridColumn="0" GridColumnSpan="3">
-      <TextButton Id="PauseButton" Text="Pause" />
-      <TextButton Id="MenuButton" Text="Menu" />
+      <Button Id="PauseButton" Content="Pause" />
+      <Button Id="MenuButton" Content="Menu" />
       <Label Id="AmmoLabel" Text="Ammo: 30" />
     </HorizontalStackPanel>
   </Grid>
@@ -215,10 +215,10 @@ Managing multiple UI screens in a game.
 <Project>
   <VerticalStackPanel>
     <Label Id="TitleLabel" Text="My Awesome Game" />
-    <TextButton Id="NewGameButton" Text="New Game" />
-    <TextButton Id="LoadGameButton" Text="Load Game" />
-    <TextButton Id="SettingsButton" Text="Settings" />
-    <TextButton Id="ExitButton" Text="Exit" />
+    <Button Id="NewGameButton" Content="New Game" />
+    <Button Id="LoadGameButton" Content="Load Game" />
+    <Button Id="SettingsButton" Content="Settings" />
+    <Button Id="ExitButton" Content="Exit" />
   </VerticalStackPanel>
 </Project>
 ```
@@ -231,7 +231,7 @@ Managing multiple UI screens in a game.
     <CheckBox Id="FullscreenCheckBox" Text="Fullscreen" />
     <CheckBox Id="SoundCheckBox" Text="Sound Enabled" />
     <Slider Id="VolumeSlider" Minimum="0" Maximum="100" Value="50" />
-    <TextButton Id="BackButton" Text="Back" />
+    <Button Id="BackButton" Content="Back" />
   </VerticalStackPanel>
 </Project>
 ```
@@ -241,9 +241,9 @@ Managing multiple UI screens in a game.
 <Project>
   <VerticalStackPanel>
     <Label Id="TitleLabel" Text="Game Paused" />
-    <TextButton Id="ResumeButton" Text="Resume" />
-    <TextButton Id="SettingsButton" Text="Settings" />
-    <TextButton Id="QuitButton" Text="Quit to Menu" />
+    <Button Id="ResumeButton" Content="Resume" />
+    <Button Id="SettingsButton" Content="Settings" />
+    <Button Id="QuitButton" Content="Quit to Menu" />
   </VerticalStackPanel>
 </Project>
 ```

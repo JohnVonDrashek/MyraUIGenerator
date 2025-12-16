@@ -54,8 +54,8 @@ Create a file `Content/UI/TitleScreen.xml`:
 ```xml
 <Project>
   <Label Id="TitleLabel" Text="Welcome to My Game" />
-  <TextButton Id="StartButton" Text="Start Game" />
-  <TextButton Id="ExitButton" Text="Exit" />
+  <Button Id="StartButton" Content="Start Game" />
+  <Button Id="ExitButton" Content="Exit" />
 </Project>
 ```
 

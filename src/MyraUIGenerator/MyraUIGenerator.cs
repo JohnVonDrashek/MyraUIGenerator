@@ -42,14 +42,14 @@ public class MyraUIGenerator : ISourceGenerator
         var namespaceName = GetConfigurationValue(context, ConfigKeyNamespace, DefaultNamespace);
         var xmlDirectory = GetConfigurationValue(context, ConfigKeyXmlDirectory, DefaultXmlDirectory);
 
-        // Report diagnostic for debugging (use Warning so it shows up)
+        // Report diagnostic for debugging (use Info for informational messages)
         var diagnostic = Diagnostic.Create(
             new DiagnosticDescriptor(
                 "MYRA002",
                 "Generator executing",
                 "MyraUIGenerator executing. Namespace: {0}, Directory: {1}, AdditionalFiles count: {2}",
                 "MyraUI",
-                DiagnosticSeverity.Warning,
+                DiagnosticSeverity.Info,
                 true),
             Location.None,
             namespaceName,
@@ -80,7 +80,7 @@ public class MyraUIGenerator : ISourceGenerator
                 "XML files found",
                 "Found {0} XML files matching directory '{1}'",
                 "MyraUI",
-                DiagnosticSeverity.Warning,
+                DiagnosticSeverity.Info,
                 true),
             Location.None,
             xmlFiles.Count.ToString(),
@@ -113,7 +113,7 @@ public class MyraUIGenerator : ISourceGenerator
                             "Generated UI class",
                             "Generated {0}UI with {1} widgets",
                             "MyraUI",
-                            DiagnosticSeverity.Warning,
+                            DiagnosticSeverity.Info,
                             true),
                         Location.None,
                         fileName,
@@ -230,7 +230,7 @@ public class MyraUIGenerator : ISourceGenerator
         {
             var id = element.Attribute("Id")?.Value;
             var elementName = element.Name.LocalName;
-            
+
             if (!string.IsNullOrEmpty(id))
             {
                 widgets.Add(new WidgetInfo

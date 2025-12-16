@@ -42,7 +42,7 @@ public class MyraUIGenerator : ISourceGenerator
         var namespaceName = GetConfigurationValue(context, ConfigKeyNamespace, DefaultNamespace);
         var xmlDirectory = GetConfigurationValue(context, ConfigKeyXmlDirectory, DefaultXmlDirectory);
 
-        // Report diagnostic for debugging (use Info for informational messages)
+        // Report diagnostic for debugging
         var diagnostic = Diagnostic.Create(
             new DiagnosticDescriptor(
                 "MYRA002",
